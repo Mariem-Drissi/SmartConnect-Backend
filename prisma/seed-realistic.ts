@@ -510,7 +510,12 @@ async function main() {
     },
   ];
 
-  const products: { id: string; unitPrice: number; sku: string }[] = [];
+  const products: {
+    id: string;
+    name: string;
+    unitPrice: number;
+    sku: string;
+  }[] = [];
   for (const p of productData) {
     const prod = await prisma.product.upsert({
       where: { sku: p.sku },
@@ -535,7 +540,12 @@ async function main() {
         minThreshold: randInt(40, 100),
       },
     });
-    products.push({ id: prod.id, unitPrice: p.unitPrice, sku: p.sku });
+    products.push({
+      id: prod.id,
+      name: p.name,
+      unitPrice: p.unitPrice,
+      sku: p.sku,
+    });
   }
   console.log(
     `   ✅ ${categoryData.length} catégories, ${productData.length} produits`,
@@ -848,6 +858,7 @@ async function main() {
         const qty = randInt(3, 40);
         return {
           productId: p.id,
+          productName: p.name,
           quantity: qty,
           unitPrice: p.unitPrice,
           subtotal: Math.round(qty * p.unitPrice * 1000) / 1000,

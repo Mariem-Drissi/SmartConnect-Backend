@@ -134,6 +134,8 @@ model Product {
   unitPrice        Decimal           @db.Decimal(10, 2)
   costPrice        Decimal           @db.Decimal(10, 2)
   isActive         Boolean           @default(true)
+  isArchived       Boolean           @default(false)
+  archivedAt       DateTime?
   imageUrl         String?
   categoryId       String?
   createdAt        DateTime          @default(now())
@@ -206,7 +208,7 @@ model StockMovement {
 }
 
 model Client {
-  id             String          @id @default(uuid())
+  id             String       @id @default(uuid())
   name           String
   email          String?
   phone          String?
@@ -216,14 +218,16 @@ model Client {
   postalCode     String?
   latitude       Float?
   longitude      Float?
-  clientType     ClientType      @default(B2B)
+  clientType     ClientType   @default(B2B)
   taxId          String?
   assignedUserId String?
-  isActive       Boolean         @default(true)
+  isActive       Boolean      @default(true)
+  isArchived     Boolean      @default(false)
+  archivedAt     DateTime?
   notes          String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  commercial     User?           @relation("AssignedCommercial", fields: [assignedUserId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  commercial     User?        @relation("AssignedCommercial", fields: [assignedUserId], references: [id])
   clientScore    ClientScore?
   orders         SaleOrder[]
   visits         Visit[]
@@ -370,6 +374,8 @@ model SaleOrder {
   signedAt      DateTime?
   invoiceUrl    String?
   createdById   String
+  isArchived    Boolean         @default(false)
+  archivedAt    DateTime?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   client        Client          @relation(fields: [clientId], references: [id])
@@ -380,14 +386,15 @@ model SaleOrder {
 }
 
 model SaleOrderItem {
-  id        String    @id @default(uuid())
-  orderId   String
-  productId String
-  quantity  Int
-  unitPrice Decimal   @db.Decimal(10, 2)
-  subtotal  Decimal   @db.Decimal(12, 2)
-  order     SaleOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product   Product   @relation(fields: [productId], references: [id])
+  id          String    @id @default(uuid())
+  orderId     String
+  productId   String?
+  productName String
+  quantity    Int
+  unitPrice   Decimal   @db.Decimal(10, 2)
+  subtotal    Decimal   @db.Decimal(12, 2)
+  order       SaleOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@map("sale_order_items")
 }
