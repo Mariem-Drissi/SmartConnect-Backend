@@ -1,0 +1,4 @@
+import { IsString,IsNumber,IsOptional,IsBoolean,Min } from 'class-validator';
+export class CreateProductDto { @IsString() name: string; @IsString() @IsOptional() flavor?: string; @IsString() sku: string; @IsString() @IsOptional() description?: string; @IsNumber() @IsOptional() weightGrams?: number; @IsNumber() @Min(0) unitPrice: number; @IsNumber() @Min(0) costPrice: number; @IsString() @IsOptional() categoryId?: string; }
+export class UpdateProductDto { @IsString() @IsOptional() name?: string; @IsString() @IsOptional() description?: string; @IsNumber() @IsOptional() unitPrice?: number; @IsNumber() @IsOptional() costPrice?: number; @IsBoolean() @IsOptional() isActive?: boolean; @IsString() @IsOptional() categoryId?: string; }
+export class CreateCategoryDto { @IsString() name: string; @IsString() @IsOptional() description?: string; @IsString() @IsOptional() color?: string; }
